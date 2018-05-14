@@ -1,62 +1,38 @@
-clear all;
+clear
 
-%%Step 0: Loading Data
+%% Step 0: Loading Data
 
 %P = %-- Number of patients
-
 %N = %-- Number of trials per each patient
 
+Covs = GetData();
+D    = size(Covs{1}, 1);
 
+%% Step 1: taking average of all trials for each patient:
 
-for k = 1:P
-        
-%recieve data per patient and devide it to matrices of each trial
+Means = {}; %for atep 4
 
-    for i = 1 : N  %choose trial
-        
-        mX(i) = 'single_trial_dataMatrix'; %we would like to take cov 
-        
-        Covs(:,:,i) = cov(mX(i)');           %-- Extract the covariance of each trail.
-        
-        organize_covs = cat(3,Covs(:,:,i)); %organizes the cov natrices of the current patient
+for pp = 1 : P
+    Means{pp} = RiemannianMean(cat(3, Covs{pp,:}));
+end
 
+%% Step 3: taking average of averages
+mTotalMean = RiemannianMean(cat(3, Means{:}));
+
+%% Step 4: defining Ei
+mSR = mTotalMean^(-1 / 2);
+mW  = sqrt(2) * ones(D) - (sqrt(2) - 1) * eye(D);
+
+for pp = 1 : P
+    E = mSR * ( mTotalMean / Means{pp} )^(1/2);
+    
+    for nn = 1 : N
+        G         = E * Covs{pp,nn} * E';
+        mLogG     = logm(G) .* mW;
+        mX{pp,nn} = mLogG( triu(true(size(mLogG))) );
     end
-end
-%%
-%Step 2: taking average of all trials for each patient:
-
-ave_per_patient = {};
-
-mCSR= {};%for atep 4
-
-for j=1:P
-
-ave_per_patient(j) = RiemannianMean(?);
-
-    mCSR(j)            = (ave_per_patient(j))^(-1/2);
-
-
-end
-
-%%
-%Step 3: taking average of averages
-
-Total_ave = RiemannianMean();
-
-%%
-%Step 4: defining Ei
-
-E={};
-G={};
-after_log = {};
-for l = 1:P
-    E(l)= (Total_ave*inv(ave_per_patient(l)))^0.5;
-    G(l) = E(l)* Covs(:,:,l)*E(l)'
-    after_log(l) = logm((mCSR(l)*G(l)*mCSR));
+    
 end    
-
-%% Project Covariances to Tangent Plane:
-mX = CovsToVecs(?); %-- mX can be used as data in euclidean space (PCA, TSNE, Diffuion Maps, etc...)
 
 %% Diffusion Maps:
 mW  = squareform( pdist(mX') );
@@ -71,3 +47,16 @@ figure; hold on; grid on; set(gca, 'FontSize', 16);
 title('Diffusion Maps using Covarianes and Riemannian Metric')
 scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, vY, 'Fill');
 
+
+%% End Script
+function Covs = GetData()
+    for kk = 1 : 3
+        %-- recieve data per patient and devide it to matrices of each trial
+        
+        for ii = 1 : 4  %choose trial
+            mX          = 'single_trial_dataMatrix'; %we would like to take cov
+            Covs{kk,ii} = cov(mX');           %-- Extract the covariance of each trail.
+        end
+        
+    end
+end
