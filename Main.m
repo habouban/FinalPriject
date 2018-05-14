@@ -1,6 +1,6 @@
 %% Generate Data:
 C = 5;   %-- Number of Classes
-N = 100; %-- Number of points per class
+N = 100; %-- Number of trials per class
 D = 10;  %-- Dimension of each class
 
 Covs = nan(D, D, N*C);
@@ -15,6 +15,9 @@ for cc = 1 : C
         kk           = kk + 1;
     end
 end
+
+%% PT: EPE^T
+%...
 
 %% Project Covariances to Tangent Plane:
 mX = CovsToVecs(Covs); %-- mX can be used as data in euclidean space (PCA, TSNE, Diffuion Maps, etc...)
