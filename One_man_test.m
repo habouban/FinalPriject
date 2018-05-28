@@ -4,6 +4,8 @@ clear
 
 %N = %-- Number of trials per each patient
 
+
+
 data = load('S001R01_edfm.mat');
 %this data refers to one man- HOW do i devide this data into trials?
 
@@ -58,7 +60,16 @@ scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, vY, 'Fill');
 
 
 % %% End Script
-% function Covs = GetData()
+function Covs = GetData()
+
+    Files = dir(['./Data/', '*.mat'])
+    Files(3).name
+    Files(3).name(2:4)
+    str2double( Files(3).name(2:4) )
+    L = length(Files)
+    for ii = 1 : L
+        load
+
 %     for kk = 1 : 3
 %         %-- recieve data per patient and devide it to matrices of each trial
 %         
@@ -68,4 +79,4 @@ scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, vY, 'Fill');
 %         end
 %         
 %     end
-% end
+end
