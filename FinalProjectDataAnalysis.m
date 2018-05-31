@@ -45,7 +45,7 @@ for pp = 1 : P
         
                mX{pp,nn} = mLogG(triu(true(size(mLogG))));
                
-               
+            
 
          vY(dd)       = pp; 
          dd=dd+1;
@@ -60,8 +60,8 @@ end
 
 %% Diffusion Maps:
 mW  = squareform( pdist(mXt0Vec') );
-eps = median(mW(:));
-mK  = 0.1*exp(-mW.^2 / eps^2);
+eps =1000* median(mW(:));
+mK  = exp(-mW.^2 / eps^2);
 mA  = mK ./ sum(mK, 2);
 [mPhi, mLam] = eig(mA);
 
@@ -73,8 +73,8 @@ motion_type = specific_motion_matrix(:);
 %% Plot:
 figure; hold on; grid on; set(gca, 'FontSize', 16);
 title('Diffusion Maps using Covarianes and Riemannian Metric')
-%scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, exp_type_col ,'diamond', 'Fill');
+scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, exp_type_col ,'diamond', 'Fill');
 
 %scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, vY ,'diamond', 'Fill');
 
-scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, motion_type ,'diamond', 'Fill');
+%scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, motion_type ,'diamond', 'Fill');
