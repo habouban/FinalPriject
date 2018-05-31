@@ -22,28 +22,22 @@ end
 mTotalMean = RiemannianMean(cat(3, Means{:}));
 
 %% Step 3: defining Ei
-mSR = mTotalMean^(-1 / 2);
+%mSR = mTotalMean^(-1 / 2);
 
 mW  = sqrt(2) * ones(D) - (sqrt(2) - 1) * eye(D);
 
 dd =1 ;
 
-mXt0Vec = [];
+mXtoVec = [];
 
 
 for pp = 1 : P
-    E = mSR * ( mTotalMean / Means{pp} )^(1/2);
     
     for nn = 1 : N
-        G         = E * Covs{pp,nn} * E';
-        mLogG     = logm(G) .* mW;
+        G         =  Covs{pp,nn};
         
         
-        if true(size(mLogG))
-            mX{pp,nn} = triu(mLogG);
-        end
-        
-               mX{pp,nn} = mLogG(triu(true(size(mLogG))));
+               mX{pp,nn} = G(triu(true(size(G))));
                
                
 
@@ -55,13 +49,13 @@ for pp = 1 : P
     
 end    
 
- mXt0Vec = cell2mat(reshape(mX,[1,pp*nn]));
+ mXtoVec = cell2mat(reshape(mX,[1,pp*nn]));
 
 
 %% Diffusion Maps:
-mW  = squareform( pdist(mXt0Vec') );
+mW  = squareform( pdist(mXtoVec') );
 eps = median(mW(:));
-mK  = 0.1*exp(-mW.^2 / eps^2);
+mK  = exp(-mW.^2 / eps^2);
 mA  = mK ./ sum(mK, 2);
 [mPhi, mLam] = eig(mA);
 
@@ -69,12 +63,9 @@ exp_type_col = labels_matrix(:);
 
 motion_type = specific_motion_matrix(:);
 
-
 %% Plot:
 figure; hold on; grid on; set(gca, 'FontSize', 16);
 title('Diffusion Maps using Covarianes and Riemannian Metric')
 %scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, exp_type_col ,'diamond', 'Fill');
-
 %scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, vY ,'diamond', 'Fill');
-
 scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, motion_type ,'diamond', 'Fill');
