@@ -56,18 +56,22 @@ exp_type_col = labels_matrix(:);
 motion_type = specific_motion_matrix(:);
 
 %% Plot:
+close all
 figure;
-subplot(1,3,1);
-hold on; grid on; set(gca, 'FontSize', 16);
+subplot(1,3,1); hold on; grid on; set(gca, 'FontSize', 16); ax(1) = gca;
 title('Diffusion Maps using Covarianes and Riemannian Metric')
-scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, exp_type_col ,'diamond', 'Fill');
+% scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, exp_type_col ,'diamond', 'Fill');
+scatter(mPhi(:,2), mPhi(:,3), 100, exp_type_col ,'diamond', 'Fill');
 
-subplot(1,3,2);
-hold on; grid on; set(gca, 'FontSize', 16);
+subplot(1,3,2); hold on; grid on; set(gca, 'FontSize', 16); ax(2) = gca;
 title('Diffusion Maps using Covarianes and Riemannian Metric')
-scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, vY ,'diamond', 'Fill');
+% scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, vY ,'diamond', 'Fill');
+scatter(mPhi(:,2), mPhi(:,3), 100, vY ,'diamond', 'Fill');
 
-subplot(1,3,3);
-hold on; grid on; set(gca, 'FontSize', 16);
+subplot(1,3,3); hold on; grid on; set(gca, 'FontSize', 16); ax(3) = gca;
 title('Diffusion Maps using Covarianes and Riemannian Metric')
-scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, motion_type ,'diamond', 'Fill');
+% scatter3(mPhi(:,2), mPhi(:,3), mPhi(:,4), 100, motion_type ,'diamond', 'Fill');
+scatter(mPhi(:,2), mPhi(:,3), 100, motion_type ,'diamond', 'Fill');
+
+% linkprop(ax, {'CameraPosition', 'CameraUpVector'}); 
+linkaxes(ax, 'xy');
